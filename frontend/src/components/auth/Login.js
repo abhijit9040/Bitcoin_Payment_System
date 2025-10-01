@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
@@ -11,6 +11,7 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -27,8 +28,9 @@ const Login = () => {
     
     if (result.success) {
       toast.success('Login successful!');
+      navigate('/');
     } else {
-      toast.error(result.message);
+      toast.error(result.message || 'Login failed. Please check your credentials.');
     }
     
     setLoading(false);
@@ -136,4 +138,5 @@ const Login = () => {
 };
 
 export default Login;
+
 

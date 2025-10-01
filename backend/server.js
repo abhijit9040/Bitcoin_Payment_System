@@ -64,18 +64,50 @@ const generateAddress = () => {
 
 // JWT Middleware
 const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  try {
+    const authHeader = req.headers['authorization'];
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ 
+        message: 'Access token required',
+        details: 'Authorization header must start with Bearer'
+      });
+    }
 
-  if (!token) {
-    return res.status(401).json({ message: 'Access token required' });
+    const token = authHeader.split(' ')[1];
+    
+    if (!token) {
+      return res.status(401).json({ 
+        message: 'Access token required',
+        details: 'Token not provided'
+      });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret', (err, decoded) => {
+      if (err) {
+        if (err.name === 'TokenExpiredError') {
+          return res.status(401).json({
+            message: 'Token expired',
+            details: 'Please login again'
+          });
+        } else if (err.name === 'JsonWebTokenError') {
+          return res.status(403).json({
+            message: 'Invalid token',
+            details: 'Token validation failed'
+          });
+        }
+        return res.status(403).json({
+          message: 'Token verification failed',
+          details: err.message
+        });
+      }
+      
+      req.user = decoded;
+      next();
+    });
+  } catch (error) {
+    next(error);
   }
-
-  jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret', (err, user) => {
-    if (err) return res.status(403).json({ message: 'Invalid token' });
-    req.user = user;
-    next();
-  });
 };
 
 // Routes

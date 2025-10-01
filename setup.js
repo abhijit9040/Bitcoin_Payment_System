@@ -69,3 +69,4 @@ console.log('- npm run server (backend only)');
 console.log('- npm run client (frontend only)');
 console.log('\n📚 Check README.md for detailed instructions');
 
+

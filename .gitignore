@@ -1,4 +1,7 @@
-# Dependencies
+Failed to load resource: the server responded with a status of 400 (Bad Request)Understand this error
+9proxy.js:1 Uncaught Error: Attempting to use a disconnected port object
+    at handleMessageFromPage (proxy.js:1:779)
+    # Dependencies
 node_modules/
 /.pnp
 .pnp.js

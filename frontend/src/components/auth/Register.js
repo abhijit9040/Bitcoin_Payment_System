@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
@@ -13,6 +13,7 @@ const Register = () => {
   });
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -40,8 +41,9 @@ const Register = () => {
     
     if (result.success) {
       toast.success('Registration successful!');
+      navigate('/');
     } else {
-      toast.error(result.message);
+      toast.error(result.message || 'Registration failed. Try a different email/username.');
     }
     
     setLoading(false);
@@ -187,4 +189,5 @@ const Register = () => {
 };
 
 export default Register;
+
 
